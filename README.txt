@@ -10,5 +10,21 @@ Dfastate: 定义各种状态
 2. tokenText: 用于保存临时的token文本
 3. tokens: 用于存储解析出来的token, 用stringBuffer进行定义
 
-目前lexer已经实现变量的定义和初始化的解析,
- 
+目前lexer已经实现变量的定义和初始化的解析
+
+
+## Parser, calculator
+
+intDeclare: parse变量声明
+
+关键的地方在于消除左递归
+
+注意这样写就不会产生左递归
+additive :
+          multiplicative
+        | multiplicative Plus additive 
+
+but:
+additive :
+          multiplicative
+        | additive Plus multiplicative 

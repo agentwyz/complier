@@ -1,10 +1,19 @@
-package com.recomplier;
-
 public enum TokenType {
     Identifier,
-    Intliteral,
+    IntLiteral,
 
     Int,
     GT,
     GE,
+    Plus,
+    Minus,
+    Star,
+    Slash,
+
+    Assignment,
+
+    LeftParen,
+
+    RightParen
+
 }

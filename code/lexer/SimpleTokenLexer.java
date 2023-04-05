@@ -1,5 +1,3 @@
-package com.recomplier;
-
 import java.io.CharArrayReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,10 +23,10 @@ public class SimpleTokenLexer {
         }
     }
 
-    //创建三个临时变量
-    private StringBuffer tokenText = null; //临时保存的文本
-    private List<Token> tokens = null;     //保存解析出来的token
-    private SimpleToken token = null;      //当前正在解析的token
+    // 创建三个临时变量
+    private StringBuffer tokenText = null; // 临时保存的文本
+    private List<Token> tokens = null; // 保存解析出来的token
+    private SimpleToken token = null; // 当前正在解析的token
 
     public DfaState initToken(char ch) {
 
@@ -36,7 +34,7 @@ public class SimpleTokenLexer {
             token.text = tokenText.toString();
             tokens.add(token);
 
-            //重新赋值
+            // 重新赋值
             tokenText = new StringBuffer();
             token = new SimpleToken();
         }
@@ -45,7 +43,7 @@ public class SimpleTokenLexer {
 
         if (isDigit(ch)) {
             newState = DfaState.IntLiteral;
-            token.tokenType = TokenType.Intliteral;
+            token.tokenType = TokenType.IntLiteral;
             tokenText.append(ch);
         } else if (isChar(ch)) {
             newState = DfaState.Id;
@@ -54,6 +52,26 @@ public class SimpleTokenLexer {
         } else if (ch == '>') {
             newState = DfaState.GT;
             token.tokenType = TokenType.GT;
+            tokenText.append(ch);
+        } else if (ch == '+') {
+            newState = DfaState.Plus;
+            token.tokenType = TokenType.Plus;
+            tokenText.append(ch);
+        } else if (ch == '-') {
+            newState = DfaState.Minus;
+            token.tokenType = TokenType.Minus;
+            tokenText.append(ch);
+        } else if (ch == '*') {
+            newState = DfaState.Star;
+            token.tokenType = TokenType.Star;
+            tokenText.append(ch);
+        } else if (ch == '(') {
+            newState = DfaState.LeftParen;
+            token.tokenType = TokenType.LeftParen;
+            tokenText.append(ch);
+        } else if (ch == ')') {
+            newState = DfaState.RightParen;
+            token.tokenType = TokenType.RightParen;
             tokenText.append(ch);
         }
 
@@ -78,6 +96,13 @@ public class SimpleTokenLexer {
                 ch = (char) ich;
 
                 switch (state) {
+                    case RightParen:
+                    case LeftParen:
+                    case Slash:
+                    case Assign:
+                    case Star:
+                    case Minus:
+                    case Plus:
                     case Initial:
                         state = initToken(ch);
                         break;
@@ -119,7 +144,6 @@ public class SimpleTokenLexer {
         return new SimpleTokenReader(tokens);
     }
 
-
     private boolean isDigit(char ch) {
         return ch >= '0' && ch <= '9';
     }
@@ -134,15 +158,20 @@ public class SimpleTokenLexer {
 
 }
 
-
 enum DfaState {
     Initial,
     Id,
     IntLiteral,
     GT,
     GE,
+    Plus,
+    Minus,
+    Star,
+    Slash, // 触发
+    Assign,
+    LeftParen,
+    RightParen
 }
-
 
 class SimpleToken implements Token {
 
@@ -160,7 +189,6 @@ class SimpleToken implements Token {
     }
 }
 
-
 class SimpleTokenReader implements TokenReader {
     List<Token> tokens = null;
     int pos = 0;
@@ -173,8 +201,7 @@ class SimpleTokenReader implements TokenReader {
     public Token read() {
         if (pos < tokens.size()) {
             return tokens.get(pos++);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -183,8 +210,7 @@ class SimpleTokenReader implements TokenReader {
     public Token peek() {
         if (pos < tokens.size()) {
             return tokens.get(pos);
-        }
-        else {
+        } else {
             return null;
         }
     }
