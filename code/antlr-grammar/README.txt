@@ -1,0 +1,1 @@
+java-jar "F:\antlr\antlr-4.7.2-complete.jar" + 文件名
